@@ -50,7 +50,7 @@ jobs:
       packages: write
       contents: read
     outputs:
-      image-ref: ${{ steps.push.outputs.image-ref }}
+      image_ref: ${{ steps.push.outputs.image_ref }}
     steps:
       - name: Install scafctl
         env:
@@ -127,15 +127,15 @@ jobs:
 
           # Resolve the pushed manifest digest for cosign signing
           DIGEST=$(crane digest "ghcr.io/oakwood-commons/providers/sleep:${VERSION}")
-          echo "image-ref=ghcr.io/oakwood-commons/providers/sleep@${DIGEST}" >> "$GITHUB_OUTPUT"
+          echo "image_ref=ghcr.io/oakwood-commons/providers/sleep@${DIGEST}" >> "$GITHUB_OUTPUT"
 
   sign:
     name: Sign OCI Artifact
     needs: publish-oci
-    if: needs.publish-oci.outputs.image-ref != ''
+    if: needs.publish-oci.outputs.image_ref != ''
     permissions:
       id-token: write
       packages: write
-    uses: oakwood-commons/scafctl/.github/workflows/sign-plugin.yml@main
+    uses: oakwood-commons/scafctl/.github/workflows/sign-plugin.yml@sign-plugin/v1
     with:
-      image-ref: ${{ needs.publish-oci.outputs.image-ref }}
+      image-ref: ${{ needs.publish-oci.outputs.image_ref }}
